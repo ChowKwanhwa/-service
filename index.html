@@ -24,11 +24,14 @@
         }
 
         @media print {
+
+            html,
             body {
                 background-color: #000 !important;
                 color: #fff !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
+                min-height: 100%;
             }
 
             .page-break {
