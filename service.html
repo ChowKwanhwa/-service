@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChainPulse Capital 服务手册</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Noto+Sans+SC:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563EB;
+            /* Royal Blue */
+            --secondary: #4F46E5;
+            /* Indigo */
+            --dark: #0F172A;
+            --light: #F8FAFC;
+            --text-main: #334155;
+            --text-light: #64748B;
+            --border: #E2E8F0;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', 'Outfit', sans-serif;
+            background: white;
+            color: var(--text-main);
+            line-height: 1.6;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        /* --- Header --- */
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .tagline {
+            font-style: italic;
+            color: var(--secondary);
+            margin-top: 0.5rem;
+        }
+
+        /* --- Typography --- */
+        h2 {
+            font-size: 1.5rem;
+            color: var(--dark);
+            border-left: 5px solid var(--secondary);
+            padding-left: 1rem;
+            margin: 2.5rem 0 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        h3 {
+            font-size: 1.15rem;
+            color: var(--primary);
+            margin: 1.5rem 0 0.8rem;
+        }
+
+        h4 {
+            font-size: 1rem;
+            color: var(--dark);
+            margin: 1rem 0 0.5rem;
+            font-weight: 700;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            text-align: justify;
+        }
+
+        /* --- Components --- */
+        .intro-box {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        blockquote {
+            background: #F1F5F9;
+            border-left: 4px solid var(--primary);
+            padding: 0.8rem 1.2rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            border-radius: 4px;
+        }
+
+        ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.3rem;
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- Tables --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        th,
+        td {
+            border: 1px solid var(--border);
+            padding: 0.8rem;
+            text-align: left;
+        }
+
+        th {
+            background: #F8FAFC;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background: #FCFCFD;
+        }
+
+        /* --- Layout Grids --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .stat-card {
+            background: var(--light);
+            padding: 1rem;
+            text-align: center;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+
+        .stat-num {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--secondary);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* --- Image Gallery (Horizontal) --- */
+        .img-row {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            overflow: hidden;
+            justify-content: center;
+            /* Center images if few */
+        }
+
+        .img-row img {
+            height: auto;
+            /* Allow natural height to show full image */
+            width: 32%;
+            /* Fixed per-item width for 3-up */
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid #eee;
+        }
+
+        /* Special handling for tall images (like mobile screenshots) */
+        .img-row.tall img {
+            height: auto;
+            width: 48%;
+            /* Ensure 2 images fit in a row */
+        }
+
+        .img-full {
+            width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            margin: 1rem 0;
+            border-radius: var(--radius);
+        }
+
+        /* --- Print Specific --- */
+        @media print {
+            body {
+                padding: 0;
+                max-width: 100%;
+            }
+
+            .no-print {
+                display: none;
+            }
+
+            h1 {
+                -webkit-text-fill-color: var(--dark);
+            }
+
+            /* Gradients don't print well sometimes */
+            a {
+                text-decoration: none;
+                color: black;
+            }
+
+            a::after {
+                content: " (" attr(href) ")";
+                font-size: 80%;
+                color: #666;
+            }
+
+            /* Show URLs */
+            .img-row {
+                page-break-inside: avoid;
+            }
+
+            section {
+                page-break-inside: avoid;
+            }
+
+            h2 {
+                page-break-after: avoid;
+            }
+
+            /* Remove URL showing for some decorative links if needed */
+            .clean-link a::after {
+                content: "";
+            }
+        }
+
+        /* --- Utilities --- */
+        .section-break {
+            margin-bottom: 2rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .partners {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--text-light);
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>无限联盟 Infinite Alliance</h1>
+        <div class="subtitle">ChainPulse Capital 链动资本 · 无限联盟孵化器</div>
+        <div class="tagline">全方位 Web3 孵化服务解决方案</div>
+    </header>
+
+    <main>
+        <!-- About Us -->
+        <section class="section-break">
+            <h2>🏢 关于我们</h2>
+            <div class="intro-box">
+                <p><strong>ChainPulse Capital 链动资本</strong> 是 Infinite Alliance 无限联盟 旗下的专业区块链项目孵化服务机构。我们专注于为 Web3
+                    项目提供从品牌建设到社区运营的全链路服务，凭借在加密货币领域的深厚积累，已成功助力多个项目实现从 0 到 1 的突破。</p>
+                <p>我们与 <strong>UZ Capital</strong>、<strong>Bluemount</strong> 等知名 Web3
+                    资本保持紧密合作，为项目方提供资源整合、资本对接和生态赋能等增值服务。</p>
+            </div>
+
+            <!-- Stats transformed to cards for better visuals -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-num">30+</span>
+                    <span class="stat-label">专业团队成员</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-num">10+</span>
+                    <span class="stat-label">国家与地区</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-num">50+</span>
+                    <span class="stat-label">成功服务项目</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-num">100+</span>
+                    <span class="stat-label">战略合作伙伴</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Challenges -->
+        <section class="section-break">
+            <h2>⚠️ Web3 项目面临的挑战</h2>
+            <div class="grid-2">
+                <div>
+                    <ul>
+                        <li><strong>品牌认知困境</strong> - 在信息过载的 Web3 世界中，如何让项目脱颖而出？</li>
+                        <li><strong>社区冷启动难题</strong> - 如何从零开始建立一个活跃、忠诚的社区？</li>
+                    </ul>
+                </div>
+                <div>
+                    <ul>
+                        <li><strong>资源对接障碍</strong> - 如何触达优质 VC、媒体和 KOL 资源？</li>
+                        <li><strong>持续增长瓶颈</strong> - 如何在激烈竞争中保持用户增长和社区活跃度？</li>
+                    </ul>
+                </div>
+            </div>
+            <p style="text-align: center; margin-top: 1rem; font-weight: bold; color: var(--primary);">ChainPulse
+                Capital 提供的不仅是服务，更是完整的解决方案。</p>
+        </section>
+
+        <!-- Services -->
+        <section class="section-break">
+            <h2>💼 核心服务</h2>
+
+            <!-- Brand Content -->
+            <div class="service-item">
+                <h3>📖 品牌内容创作</h3>
+                <p>我们提供专业的项目文档撰写与内容创作服务，帮助您的项目建立专业形象。服务包括白皮书撰写、GitBook 技术文档搭建、Deck 设计制作等。</p>
+                <!-- Images: Whitepaper -->
+                <!-- Images: Whitepaper (AI Render) -->
+                <div style="text-align: center; margin: 10px 0;">
+                    <img src="image/nanobanana/Brand Content.jpeg" alt="Whitepaper & Documentation"
+                        style="width: 100%; border-radius: 8px;">
+                </div>
+                <blockquote>📌 <strong>GitBook 案例</strong>：<a
+                        href="https://ecopulse-network.gitbook.io/pulseeco-protocol/">PulseEco Protocol</a></blockquote>
+            </div>
+
+            <!-- Visual Design -->
+            <div class="service-item">
+                <h3>🎨 视觉设计服务</h3>
+                <p>提供 Logo 与品牌设计、精美海报设计、易拉宝设计、Deck 演示文稿设计等。</p>
+                <!-- Main Visual Image -->
+                <!-- Main Visual Image (AI Render) -->
+                <div style="text-align: center; margin-bottom: 10px;">
+                    <img src="image/nanobanana/Visual Design.jpeg" alt="视觉设计概览"
+                        style="width: 100%; border-radius: 8px;">
+                </div>
+                <!-- Images: Decks -->
+                <div class="img-row">
+                    <img src="image/deck1.png" alt="Deck 示例 1">
+                    <img src="image/deck2.png" alt="Deck 示例 2">
+                    <img src="image/deck3.png" alt="Deck 示例 3">
+                </div>
+                <blockquote>📊 <strong>Deck 设计参考</strong>：<a
+                        href="https://drive.google.com/drive/folders/1apLP6Zdu122oZ4UTmR3VrIiu6EyWIxRL">Google Drive
+                        案例库</a></blockquote>
+            </div>
+
+            <div class="service-item">
+                <h3>🎬 视频内容制作</h3>
+                <p>包括宣传片制作、MG 动画制作、快闪视频制作等，用生动的视觉语言讲述您的项目故事。</p>
+                <div style="text-align: center; margin-top: 10px;">
+                    <img src="image/nanobanana/Video Production.jpeg" alt="Video Production"
+                        style="width: 100%; border-radius: 8px;">
+                </div>
+            </div>
+
+            <!-- Community -->
+            <div class="service-item">
+                <h3>🌐 社群建设运营</h3>
+                <div class="grid-2">
+                    <div>
+                        <h4>Telegram & Discord 全方位管理</h4>
+                        <p>群组架构设计、7×24 小时在线管理、多语言社区支持。定制化机器人开发与自动回复系统。</p>
+                    </div>
+                    <div>
+                        <h4>Twitter 内容运营</h4>
+                        <p>内容策划与发布，话题引导与互动管理。</p>
+                    </div>
+                </div>
+                <!-- Images: Community -->
+                <!-- Images: Community (AI Render) -->
+                <div style="text-align: center; margin: 1rem 0;">
+                    <img src="image/nanobanana/Community.jpeg" alt="Global Community"
+                        style="width: 100%; border-radius: 8px;">
+                </div>
+                <div style="text-align: center; margin-top: 10px;">
+                    <img src="image/社群建设与经营.png" alt="社群建设流程" style="width: 100%; height: auto; border-radius: 8px;">
+                </div>
+            </div>
+
+            <!-- Automation -->
+            <div class="service-item">
+                <h3>🤖 自动化运营工具</h3>
+                <p>精通 Python、Javascript、NodeJS。开发多数据客服响应系统、反垃圾信息过滤系统、多语言自动翻译等。</p>
+                <ul>
+                    <li><strong>Telegram 运营矩阵</strong>：500+ 真实活跃账号</li>
+                    <li><strong>Twitter 推广网络</strong>：100+ 优质账号</li>
+                    <li><strong>Discord 管理系统</strong>：300+ 社区成员资源</li>
+                </ul>
+                <div style="text-align: center; margin-top: 10px;">
+                    <img src="image/nanobanana/Automation Tools.jpeg" alt="Automation Tools"
+                        style="width: 100%; border-radius: 8px;">
+                </div>
+            </div>
+
+            <!-- PR & Growth -->
+            <div class="grid-2">
+                <div>
+                    <h3>📢 媒体 PR 推广</h3>
+                    <ul>
+                        <li><strong>行业媒体投稿</strong>：星球日报、链捕手、MetaEra 等</li>
+                        <li><strong>品牌曝光传播</strong>：KOL 合作、社区联盟</li>
+                        <li><strong>AMA & Binance Live</strong>：策划执行、直播技术支持</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>🚀 Web3 增长服务</h3>
+                    <ul>
+                        <li><strong>空投设计</strong>：代币经济、反女巫</li>
+                        <li><strong>NFT 全链路</strong>：策划、合约、Mint 页面</li>
+                        <li><strong>增长工具</strong>：Galxe, Zealy 集成</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="text-align: center; margin: 10px 0;">
+                <img src="image/nanobanana/Growth & Airdrop.jpeg" alt="Growth & Airdrop"
+                    style="width: 100%; border-radius: 8px;">
+            </div>
+            <!-- Social/Resources Images -->
+            <!-- Social/Resources Images -->
+            <div class="grid-2">
+                <img src="image/推特.png" alt="Twitter 运营"
+                    style="width: 100%; height: auto; border-radius: 8px; object-fit: contain;">
+                <img src="image/在线资源汇总.png" alt="资源汇总"
+                    style="width: 100%; height: auto; border-radius: 8px; object-fit: contain;">
+            </div>
+
+        </section>
+
+        <!-- Lifecycle Strategy -->
+        <section class="section-break" style="page-break-before: always;">
+            <h2>🎯 项目全周期服务策略</h2>
+            <div style="background: #F8FAFC; padding: 1rem; border-radius: 8px;">
+                <h4>📍 Pre-Launch 阶段</h4>
+                <p>建立品牌认知，积累种子用户（VI搭建、白皮书、社群预热）</p>
+                <h4>🚀 Launch 阶段</h4>
+                <p>最大化曝光，引爆市场关注（媒体发稿、AMA、空投、舆情监控）</p>
+                <h4>📈 Post-Launch 阶段</h4>
+                <p>保持热度，可持续增长（内容营销、留存提升、生态合作）</p>
+            </div>
+        </section>
+
+        <!-- Service Matrix Table -->
+        <section class="section-break">
+            <h2>🛠️ 我们的服务矩阵</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">分类</th>
+                        <th>服务内容</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>品牌建设</strong></td>
+                        <td>白皮书撰写 · Deck 设计 · 视觉识别系统 · Logo 设计 · 海报设计 · 视频制作</td>
+                    </tr>
+                    <tr>
+                        <td><strong>社区运营</strong></td>
+                        <td>Telegram/Discord 管理 · Twitter 策划 · 7×24 小时客服 · AMA 策划</td>
+                    </tr>
+                    <tr>
+                        <td><strong>技术支持</strong></td>
+                        <td>工具开发 · 机器人定制 · 数据分析 · API 集成</td>
+                    </tr>
+                    <tr>
+                        <td><strong>增长黑客</strong></td>
+                        <td>空投活动 · NFT 发行 · Galxe/Zealy · KOL 合作 · 媒体投稿</td>
+                    </tr>
+                    <tr>
+                        <td><strong>资源对接</strong></td>
+                        <td>VC 引荐 · 媒体资源 · KOL 网络 · 生态伙伴</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Pricing Table -->
+        <section class="section-break">
+            <h2>💰 服务定价参考</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>服务类别</th>
+                        <th>交付内容</th>
+                        <th>核心成果</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>白皮书撰写</td>
+                        <td>15+ 套完整文档 (中英)</td>
+                        <td>已发布至 GitBook</td>
+                    </tr>
+                    <tr>
+                        <td>投资人 Deck</td>
+                        <td>完整 PPT 演示文稿</td>
+                        <td>Google Slides 在线展示</td>
+                    </tr>
+                    <tr>
+                        <td>视觉设计</td>
+                        <td>Logo、Banner、海报 30+ 套</td>
+                        <td>完整品牌 VI 系统</td>
+                    </tr>
+                    <tr>
+                        <td>社群运营</td>
+                        <td>Discord/Telegram 建设 (多语言)</td>
+                        <td>完整架构 & SOP</td>
+                    </tr>
+                    <tr>
+                        <td>媒体 PR</td>
+                        <td>主流日报媒体代发</td>
+                        <td>多平台曝光</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="font-size: 0.9rem; color: var(--text-light); font-style: italic;">* 定制化服务：以上为标准参考，可根据需求定制。</p>
+        </section>
+
+        <!-- Success Case -->
+        <section class="section-break">
+            <h2>📊 成功案例：TheKOINOperation</h2>
+            <div class="intro-box">
+                <p><strong>成果：</strong>社区规模 0 -> 50k+，AMA 参与人数 10k+，Twitter 互动率提升 250%。</p>
+                <p style="margin-bottom: 0;"><a
+                        href="https://gusw1d7m49di.larksuite.com/wiki/L89qw2jJMilaCKkfOQyuyWfCsEe">👉 查看详细案例</a></p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer style="margin-top: 3rem; border-top: 2px solid var(--border); padding-top: 2rem; text-align: center;">
+            <div class="partners">
+                <span>Infinite Alliance</span>
+                <span>UZ Capital</span>
+                <span>Bluemount</span>
+            </div>
+            <div style="margin-top: 1.5rem; color: var(--text-light);">
+                <p>🌐 官网: www.rdmedia.live &nbsp;|&nbsp; 📧 邮箱: levijczhou@gmail.com</p>
+                <p>💬 Telegram: @kowliep &nbsp;|&nbsp; ▶️ YouTube: Infinite Alliance</p>
+            </div>
+        </footer>
+
+    </main>
+</body>
+
+</html>

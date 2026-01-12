@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The KOIN Operation - Project Case Study</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Sans+SC:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --card-bg: #111111;
+            --text-main: #Eaeaea;
+            --text-muted: #A0A0A0;
+            --gold-primary: #D4AF37;
+            --gold-light: #F2D06B;
+            --gold-dark: #8F7624;
+            --border-color: #333333;
+            --radius: 4px;
+        }
+
+        @media print {
+            body {
+                background-color: #000 !important;
+                color: #fff !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .page-break {
+                page-break-before: always;
+            }
+
+            a {
+                text-decoration: none !important;
+                color: var(--gold-primary) !important;
+            }
+
+            #lang-btn {
+                display: none !important;
+            }
+
+            /* Hide button in print */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', 'Noto Sans SC', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.7;
+            padding: 40px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* Language Switcher */
+        #lang-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--gold-primary);
+            color: var(--gold-primary);
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            z-index: 1000;
+            transition: all 0.2s;
+        }
+
+        #lang-btn:hover {
+            background: var(--gold-primary);
+            color: #000;
+        }
+
+        /* Lang visibility logic */
+        body.lang-en-active .lang-zh {
+            display: none;
+        }
+
+        body.lang-zh-active .lang-en {
+            display: none;
+        }
+
+        /* Typography */
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Outfit', 'Noto Sans SC', sans-serif;
+            color: var(--gold-primary);
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(to right, var(--gold-light), var(--gold-primary), var(--gold-dark));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+
+        h1 .subtitle-badge {
+            display: inline-block;
+            font-size: 1rem;
+            vertical-align: middle;
+            background: var(--gold-dark);
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-left: 15px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            -webkit-text-fill-color: black;
+        }
+
+        .main-subtitle {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.4rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 2rem;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin: 3rem 0 1.5rem;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--gold-dark);
+            display: inline-block;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: white;
+            margin: 2rem 0 1rem;
+            border-left: 3px solid var(--gold-primary);
+            padding-left: 15px;
+        }
+
+        h4 {
+            font-size: 1.1rem;
+            color: var(--gold-light);
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            margin-bottom: 1.2rem;
+            font-weight: 300;
+            color: #cccccc;
+        }
+
+        strong {
+            color: white;
+            font-weight: 600;
+        }
+
+        a {
+            color: var(--gold-primary);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--gold-dark);
+            transition: all 0.2s;
+        }
+
+        a:hover {
+            color: var(--gold-light);
+            border-bottom: 1px solid var(--gold-light);
+        }
+
+        blockquote {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--gold-dark);
+            border-left: 4px solid var(--gold-primary);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95rem;
+        }
+
+        ul {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            color: #cccccc;
+        }
+
+        /* Specific Layouts */
+        .project-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            background: var(--card-bg);
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            margin-bottom: 3rem;
+        }
+
+        .meta-item label {
+            display: block;
+            color: var(--gold-dark);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .meta-item span {
+            font-size: 1.1rem;
+            color: white;
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Image Grid */
+        .img-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 2rem 0;
+        }
+
+        .img-grid img {
+            width: 100%;
+            height: auto;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease;
+        }
+
+        .img-single-wide {
+            width: 100%;
+            margin: 2rem 0;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Sections */
+        .step-container {
+            margin-bottom: 4rem;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .contact-box {
+            background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+            border: 1px solid var(--gold-dark);
+            padding: 3rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .contact-box p {
+            margin-bottom: 0.5rem;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            text-align: center;
+            border-top: 3px solid var(--gold-primary);
+        }
+
+        .result-num {
+            display: block;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--gold-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .result-label {
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        /* Helper */
+        .emoji {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+
+<body class="lang-en-active">
+
+    <button id="lang-btn" onclick="toggleLanguage()">中文</button>
+
+    <header>
+        <h1>
+            <span class="lang-en">The KOIN Operation</span><span class="lang-zh">The KOIN Operation项目</span>
+            <span class="subtitle-badge"><span class="lang-en">CASE STUDY</span><span class="lang-zh">案例研究</span></span>
+        </h1>
+        <div class="main-subtitle">
+            <span class="lang-en">From Zero to One: A Blockchain Revolution in Africa</span>
+            <span class="lang-zh">从零到一：非洲区块链的变革</span>
+        </div>^M
+        <!-- Project Meta -->
+        <div class="project-meta">
+            <div class="meta-item">
+                <label><span class="lang-en">Project Name</span><span class="lang-zh">项目名称</span></label>
+                <span>KOIN (Kajornphuwapong Omni-Inclusive Network)</span>
+            </div>
+            <div class="meta-item">
+                <label><span class="lang-en">Type</span><span class="lang-zh">类型</span></label>
+                <span><span class="lang-en">Blockchain Ecosystem</span><span class="lang-zh">区块链数字货币生态系统</span></span>
+            </div>
+            <div class="meta-item">
+                <label><span class="lang-en">Period</span><span class="lang-zh">合作周期</span></label>
+                <span>2025</span>
+            </div>
+            <div class="meta-item">
+                <label><span class="lang-en">Scale</span><span class="lang-zh">规模</span></label>
+                <span><span class="lang-en">Pan-African</span><span class="lang-zh">跨越多个非洲国家的大型项目</span></span>
+            </div>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- Project Background -->
+        <section>
+            <h2><span class="emoji">🎯</span><span class="lang-en">Project Background</span><span
+                    class="lang-zh">项目背景</span></h2>
+            <div class="two-col">
+                <div>
+                    <p class="lang-en">In January 2025, Donald Trump's launch of Trump Coin created massive waves in the
+                        cryptocurrency market, showing the world the enormous potential of combining political influence
+                        with blockchain technology. Trump Coin's success wasn't just a commercial miracle - it proved
+                        that leaders with strong personal charisma and political standing can create unprecedented value
+                        through blockchain technology.</p>
+                    <p class="lang-zh">2025年1月，美国总统川普推出的 Trump Coin
+                        在加密市场引发了剧烈震荡，向世界展示了"政治影响力与区块链技术结合"的巨大潜力。这不仅是商业奇迹，更证明了具备强大个人魅力和政治地位的领袖可以通过区块链创造前所未有的价值。</p>
+
+                    <p class="lang-en">Against this backdrop, <strong>Mr. Chanasnun Kajornphuwapong</strong>, Founder
+                        President of the PEACE Alliance with UN ECOSOC Special Consultative Status, keenly recognized
+                        the opportunity.</p>
+                    <p class="lang-zh">在此背景下，拥有联合国经社理事会特别咨商地位的 PEACE Alliance 创始主席 <strong>Chanasnun Kajornphuwapong
+                            先生</strong> 敏锐地洞察到了这一历史性机遇。</p>
+                </div>
+                <div>
+                    <p class="lang-en">As a political leader with deep roots across the African continent, he is not
+                        only a key partner to multiple African nations but also the founder of Music World Cup and the
+                        African Economic & Ecological Modernization Sphere (EEMS).</p>
+                    <p class="lang-zh">作为深耕非洲大陆的政治领袖，他不仅是多个非洲国家的关键合作伙伴，更是音乐世界杯和非洲经贸生态现代化圈 (EEMS) 的创始人。</p>
+
+                    <p class="lang-en">The KOIN project carries the mission of establishing Africa's first cross-border
+                        official digital currency, creating a globally influential African cultural IP, and achieving
+                        perfect integration of traditional culture with modern technology.</p>
+                    <p class="lang-zh">KOIN 项目肩负着建立非洲首个跨境官方数字货币、打造具备全球影响力的非洲文化 IP、实现传统文化与现代科技完美融合的历史使命。</p>
+                </div>
+            </div>
+        </section>
+
+        <div style="height: 2rem;"></div>
+
+        <!-- Step 1 -->
+        <section class="step-container">
+            <h2><span class="emoji">🛠️</span><span class="lang-en">How We Did It</span><span
+                    class="lang-zh">我们是如何做到的</span></h2>
+
+            <h3><span class="lang-en">Step One: Building the Foundation (2024 Q1-Q2)</span><span
+                    class="lang-zh">第一步：奠定基石 (2024 Q1-Q2)</span></h3>
+
+            <h4><span class="lang-en">📄 Starting with the Whitepaper</span><span class="lang-zh">📄 白皮书撰写</span></h4>
+            <p class="lang-en">When Mr. Kajornphuwapong approached us, he had a grand vision but needed to transform it
+                into professional technical documentation. We spent two full months in deep communication with him,
+                ultimately completing a 36-page professional whitepaper.</p>
+            <p class="lang-zh">当 Kajornphuwapong 先生找到我们时，他怀揣着宏大的愿景，但急需将其转化为专业的技术文档。我们与他进行了为期两个月的深度沟通，最终完成了一份 36 页的专业白皮书。
+            </p>
+
+            <p class="lang-en">This whitepaper wasn't just technical documentation - it was a complete story, from
+                project vision to technical architecture, from token economics to development roadmap, with every detail
+                carefully refined.</p>
+            <p class="lang-zh">这份白皮书不仅技术严谨，更讲述了一个完整的故事——从项目愿景到技术架构，从代币经济到发展路线图，每个细节都经过精心打磨。</p>
+            ^M
+            <!-- Images for Whitepaper -->
+            <div class="img-grid">
+                <img src="koinimage/whitepaper1.png" alt="Whitepaper Page 1">
+                <img src="koinimage/whitepaper2.png" alt="Whitepaper Page 2">
+                <img src="koinimage/whitepaper3.png" alt="Whitepaper Page 3">
+            </div>
+
+            <blockquote>
+                <span class="emoji">📎</span> <strong><span class="lang-en">Whitepaper:</span><span
+                        class="lang-zh">白皮书：</span></strong> <a
+                    href="https://www.thekoinoperation.com/KOIN-WHITEPAPER.pdf">Download PDF</a><br>
+                <span class="emoji">📎</span> <strong><span class="lang-en">One-pager:</span><span
+                        class="lang-zh">一页通：</span></strong> <a
+                    href="https://deluxe-jellyfish-a8d.notion.site/KOIN-1b767e3f83c780589088ee896cb5a60a?pvs=73">Notion
+                    Page</a>
+            </blockquote>
+
+            <h4><span class="lang-en">💰 Designing Token Economics</span><span class="lang-zh">💰 设计代币经济学</span></h4>
+            <p class="lang-en">Token economics is the core of the entire project and the most challenging aspect. We
+                worked with the team to design a KOIN token system with 27 billion total supply and an initial price of
+                $0.5. This wasn't a number pulled out of thin air, but the result of careful calculations based on
+                African market size, user growth expectations, and project development needs.</p>
+            <p class="lang-zh">代币经济学是整个项目的核心。我们与团队共同设计了总量 270 亿、初始价格 0.5 美元的 KOIN
+                代币系统。这绝非凭空臆造，而是基于非洲市场规模、用户增长预期和项目发展需求科学测算的结果。</p>
+
+            <p class="lang-en">The key was the distribution mechanism - we designed a release plan that both
+                incentivizes long-term team development and protects community interests.</p>
+            <p class="lang-zh">关键在于分配机制——我们设计了一套既能激励团队长期发展，又能保护社区利益的释放方案。</p>
+        </section>
+
+        <!-- Step 2 -->
+        <section class="step-container page-break">
+            <h3><span class="lang-en">Step Two: Building Brand Image (2024 Q2-Q3)</span><span class="lang-zh">第二步：构建品牌形象
+                    (2024 Q2-Q3)</span></h3>
+
+            <h4><span class="lang-en">🌐 Building the Official Website</span><span class="lang-zh">🌐 搭建官方网站</span></h4>
+            <p class="lang-en">With solid foundational documents, the next step was making the project "look"
+                professional. We created a modern official website for KOIN at <strong>thekoinoperation.com</strong>.
+            </p>
+            <p class="lang-zh">在夯实基础文档之后，下一步是赋予项目专业的"外观"。我们为 KOIN 打造了现代化的官方网站 <strong>thekoinoperation.com</strong>。
+            </p>
+
+            <p class="lang-en">This website isn't just about looking good - we implemented responsive design to ensure
+                it looks great on mobile; added multi-language support since KOIN targets a global market; and optimized
+                for SEO.</p>
+            <p class="lang-zh">这不仅仅是为了美观——我们实施了响应式设计，确保在移动端也能完美呈现；考虑到 KOIN 面向全球市场，我们添加了多语言支持；同时进行了 SEO 优化，以便获得更好的搜索排名。
+            </p>
+
+            <!-- Images for Website -->
+            <div class="img-grid">
+                <img src="koinimage/website1.png" alt="Website Desktop View">
+                <img src="koinimage/website2.png" alt="Website Mobile View">
+                <img src="koinimage/website3.png" alt="Website Feature Section">
+            </div>
+
+            <h4><span class="lang-en">🎨 Designing Brand Visuals</span><span class="lang-zh">🎨 设计品牌视觉</span></h4>
+            <p class="lang-en">Brand visuals are the project's "face". We designed a complete brand identity system for
+                KOIN - <strong>black and gold primary colors</strong> embody Africa's nobility, while deep blue accents
+                represent technology's futuristic feel.</p>
+            <p class="lang-zh">品牌视觉是项目的"名片"。我们为 KOIN 设计了完整的 VI 系统——<strong>黑金主色调</strong>彰显非洲的高贵，深蓝点缀则代表科技的未来感。</p>
+
+            <!-- Images for Deck -->
+            <div class="img-grid">
+                <img src="koinimage/deck1.png" alt="Deck Slide 1">
+                <img src="koinimage/deck2.png" alt="Deck Slide 2">
+                <img src="koinimage/deck3.png" alt="Deck Slide 3">
+            </div>
+
+            <blockquote>
+                <span class="emoji">📎</span> <strong>Deck:</strong> <a
+                    href="https://www.thekoinoperation.com/KOIN-DECK.pptx">Download PPT</a>
+            </blockquote>
+        </section>
+
+        <!-- Step 3 -->
+        <section class="step-container">
+            <h3><span class="lang-en">Step Three: Social Media and Personal IP (2024 Q3-Q4)</span><span
+                    class="lang-zh">第三步：社交媒体运营与个人 IP 打造 (2024 Q3-Q4)</span></h3>
+
+            <h4><span class="lang-en">📱 Operating Project Social Media</span><span class="lang-zh">📱 运营项目社媒</span>
+            </h4>
+            <p class="lang-en">We took over the project's Twitter <strong><a href="https://x.com/TheKoinOp"
+                        target="_blank">@TheKoinOp</a></strong> and Instagram <strong><a
+                        href="https://www.instagram.com/thekoinop" target="_blank">@thekoinop</a></strong>. We created
+                a 30-day content plan with different themes each day - sometimes sharing project progress, sometimes
+                educating about blockchain, sometimes showcasing African culture.</p>
+            <p class="lang-zh">我们全面接手了项目的 Twitter <strong><a href="https://x.com/TheKoinOp"
+                        target="_blank">@TheKoinOp</a></strong> 和 Instagram <strong><a
+                        href="https://www.instagram.com/thekoinop" target="_blank">@thekoinop</a></strong>。制定了 30
+                天内容规划，每天涵盖不同主题——时而分享项目进展，时而科普区块链知识，时而展示丰富多彩的非洲文化。</p>
+
+            <!-- Images for Social Media -->
+            <div class="img-grid">
+                <img src="koinimage/socialmedia1.png" alt="Social Media Post 1">
+                <img src="koinimage/socialmedia2.png" alt="Social Media Post 2">
+                <img src="koinimage/socialmedia3.png" alt="Social Media Post 3">
+            </div>
+
+            <h4><span class="lang-en">👤 Building Founder Personal IP</span><span class="lang-zh">👤 打造创始人个人 IP</span>
+            </h4>
+            <p class="lang-en">Beyond project accounts, we also helped Mr. Kajornphuwapong build his personal brand
+                (Twitter: <strong><a href="https://x.com/Kajornphuwapong" target="_blank">@Kajornphuwapong</a></strong>,
+                Instagram: <strong><a href="https://www.instagram.com/chanasnun_kajornphuwapong"
+                        target="_blank">@chanasnun_kajornphuwapong</a></strong>). The
+                goal is showing people this isn't just a politician doing a project, but a leader who truly understands
+                technology and cares about African development.</p>
+            <p class="lang-zh">除了项目账号，我们还帮助 Kajornphuwapong 先生打造了个人品牌 (Twitter: <strong><a
+                        href="https://x.com/Kajornphuwapong" target="_blank">@Kajornphuwapong</a></strong>, Instagram:
+                <strong><a href="https://www.instagram.com/chanasnun_kajornphuwapong"
+                        target="_blank">@chanasnun_kajornphuwapong</a></strong>)。我们的目标是向公众展示：这不仅是政治家的项目，更是一位深谙技术、心系非洲发展的领袖的愿景。
+            </p>
+        </section>
+
+        <!-- Step 4 -->
+        <section class="step-container">
+            <h3><span class="lang-en">Step Four: Building Active Communities (2024 Q4-2025 Q1)</span><span
+                    class="lang-zh">第四步：建设活跃社区 (2024 Q4-2025 Q1)</span></h3>
+
+            <div class="two-col">
+                <div>
+                    <h4><span class="lang-en">💬 Building Telegram Communities</span><span class="lang-zh">💬 搭建
+                            Telegram 社区</span></h4>
+                    <p class="lang-en">We built a complete Telegram community system for KOIN with multi-level group
+                        architecture. Group decoration used KOIN's brand colors. We provided 24-hour online management
+                        service with dedicated teams working in shifts.</p>
+                    <p class="lang-zh">我们为 KOIN 搭建了完整的 Telegram 社区体系，采用多层级群组架构。社区视觉风格与其品牌色调保持高度一致，并提供 7x24 小时轮班制在线管理服务。
+                    </p>
+                </div>
+                <div>
+                    <h4><span class="lang-en">🎮 Building Discord Community</span><span class="lang-zh">🎮 搭建 Discord
+                            社区</span></h4>
+                    <p class="lang-en">We designed a complete channel architecture for Discord. We set different user
+                        levels where active users get more permissions. We also developed our own Discord bot with
+                        features tailored to KOIN's needs.</p>
+                    <p class="lang-zh">我们设计了完整的 Discord 频道架构。设置不同用户等级，赋予活跃用户更多权限。我们还开发了定制化 Discord 机器人以满足项目特殊需求。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 5 -->
+        <section class="step-container page-break">
+            <h3><span class="lang-en">Step Five: Web3 Growth (2025 Q1-Present)</span><span class="lang-zh">第五步：Web3 增长策略
+                    (2025 Q1-至今)</span></h3>
+            <ul>
+                <li><strong><span class="lang-en">Airdrop Strategy:</span><span class="lang-zh">空投策略：</span></strong>
+                    <span class="lang-en">Detailed rules rewarding early supporters with anti-sybil
+                        algorithms.</span><span class="lang-zh">制定详尽规则奖励早期支持者，并部署反女巫算法以确保公平。</span>
+                </li>
+                <li><strong><span class="lang-en">Growth Tools:</span><span class="lang-zh">增长工具：</span></strong> <span
+                        class="lang-en">Integration with Galxe and Zealy for task-based acquisition.</span><span
+                        class="lang-zh">集成 Galxe 和 Zealy 平台，通过任务裂变实现用户增长。</span></li>
+                <li><strong><span class="lang-en">Live Events:</span><span class="lang-zh">直播活动：</span></strong> <span
+                        class="lang-en">Organizing bilingual AMAs and securing Binance Live streaming slots.</span><span
+                        class="lang-zh">组织双语 AMA，并成功争取到币安直播 (Binance Live) 席位。</span></li>
+            </ul>
+        </section>
+
+        <hr style="border-color: var(--border-color); margin: 3rem 0;">
+
+        <!-- Results -->
+        <section>
+            <h2><span class="emoji">📈</span><span class="lang-en">Project Results</span><span
+                    class="lang-zh">项目成果</span></h2>
+            <div class="results-grid">
+                <div class="result-card">
+                    <span class="result-num">100K+</span>
+                    <span class="result-label"><span class="lang-en">Monthly Visits</span><span
+                            class="lang-zh">月均访问量</span></span>
+                </div>
+                <div class="result-card">
+                    <span class="result-num">50K+</span>
+                    <span class="result-label"><span class="lang-en">Twitter Fans</span><span class="lang-zh">Twitter
+                            粉丝</span></span>
+                </div>
+                <div class="result-card">
+                    <span class="result-num">80K+</span>
+                    <span class="result-label"><span class="lang-en">Telegram Members</span><span
+                            class="lang-zh">Telegram 成员</span></span>
+                </div>
+                <div class="result-card">
+                    <span class="result-num">20K+</span>
+                    <span class="result-label"><span class="lang-en">Whitepaper DLs</span><span
+                            class="lang-zh">白皮书下载量</span></span>
+                </div>
+            </div>
+
+            <h3><span class="lang-en">🏆 Project Milestones</span><span class="lang-zh">🏆 项目里程碑</span></h3>
+            <div class="two-col">
+                <ul>
+                    <li>✅ <span class="lang-en">Official website launched</span><span class="lang-zh">官网正式上线</span></li>
+                    <li>✅ <span class="lang-en">Token economic model completed</span><span
+                            class="lang-zh">代币模型搭建完成</span>
+                    </li>
+                    <li>✅ <span class="lang-en">Brand visual system established</span><span class="lang-zh">视觉识别 (VI)
+                            系统确立</span></li>
+                    <li>✅ <span class="lang-en">Social media matrix built</span><span class="lang-zh">社媒矩阵构建完成</span>
+                    </li>
+                </ul>
+                <ul>
+                    <li>✅ <span class="lang-en">Active community construction</span><span class="lang-zh">活跃社区建设</span>
+                    </li>
+                    <li>✅ <span class="lang-en">Founder personal IP built</span><span class="lang-zh">创始人 IP 打造</span>
+                    </li>
+                    <li>✅ <span class="lang-en">Web3 growth tools integrated</span><span class="lang-zh">Web3
+                            增长工具集成</span></li>
+                    <li>✅ <span class="lang-en">Security audit report published</span><span
+                            class="lang-zh">安全审计报告发布</span></li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Security -->
+        <section style="margin-top: 3rem;">
+            <h2><span class="emoji">🛡️</span><span class="lang-en">Security & Compliance</span><span
+                    class="lang-zh">安全与合规</span></h2>
+            <p><strong><span class="lang-en">Security Audit:</span><span class="lang-zh">安全审计：</span></strong> <a
+                    href="https://beosin.com/audits/KOIN_202503191837.pdf">Beosin Audit Report</a> ✅</p>
+            <p><span class="lang-en">Includes Smart contract testing, Code vulnerability scanning, Legal compliance
+                    analysis, and KYC/AML policy development.</span><span class="lang-zh">涵盖智能合约安全测试、代码漏洞扫描、法律合规分析及
+                    KYC/AML 政策制定。</span></p>
+        </section>
+
+        <!-- Contact Box -->
+        <div class="contact-box">
+            <h2 style="border:none; margin-top:0;"><span class="lang-en">Contact Us</span><span
+                    class="lang-zh">联系我们</span></h2>
+            <p><span class="lang-en">Interested in our services?</span><span class="lang-zh">对我们的服务感兴趣？</span></p>
+            <div style="margin-top: 2rem;">
+                <p><span class="emoji">📧</span> mrbaolaoge@gmail.com</p>
+                <p><span class="emoji">💬</span> Telegram: <a href="https://t.me/kowliep">@kowliep</a></p>
+                <p><span class="emoji">▶️</span> <a href="https://www.youtube.com/watch?v=4vrF5YD87tw">YouTube
+                        Channel</a></p>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        function toggleLanguage() {
+            const body = document.body;
+            const btn = document.getElementById('lang-btn');
+
+            if (body.classList.contains('lang-en-active')) {
+                // Switch to ZH
+                body.classList.remove('lang-en-active');
+                body.classList.add('lang-zh-active');
+                btn.innerText = 'Switch to English';
+            } else {
+                // Switch to EN
+                body.classList.remove('lang-zh-active');
+                body.classList.add('lang-en-active');
+                btn.innerText = '切换到中文';
+            }
+        }
+    </script>
+</body>
+
+</html>
