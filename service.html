@@ -255,14 +255,21 @@
             }
 
             /* Show URLs */
+            /* Only prevent breaking inside specific indivisible elements */
             .img-row,
-            .service-item,
             .intro-box,
             table,
             blockquote,
-            .grid-2 {
+            .grid-2,
+            img {
                 break-inside: avoid;
                 page-break-inside: avoid;
+            }
+
+            /* Allow service items to break, but keep headings attached */
+            .service-item {
+                break-inside: auto;
+                page-break-inside: auto;
             }
 
             section {
