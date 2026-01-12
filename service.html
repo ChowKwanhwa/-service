@@ -255,12 +255,19 @@
             }
 
             /* Show URLs */
-            .img-row {
+            .img-row,
+            .service-item,
+            .intro-box,
+            table,
+            blockquote,
+            .grid-2 {
+                break-inside: avoid;
                 page-break-inside: avoid;
             }
 
             section {
-                page-break-inside: avoid;
+                break-inside: auto;
+                page-break-inside: auto;
             }
 
             h2 {
@@ -478,7 +485,7 @@
         </section>
 
         <!-- Lifecycle Strategy -->
-        <section class="section-break" style="page-break-before: always;">
+        <section class="section-break">
             <h2>🎯 项目全周期服务策略</h2>
             <div style="background: #F8FAFC; padding: 1rem; border-radius: 8px;">
                 <h4>📍 Pre-Launch 阶段</h4>
